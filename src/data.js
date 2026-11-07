@@ -1,6 +1,7 @@
-/* Papertrail — demo data.
-   Everything here is FICTIONAL: the city of Riverton, its council members,
-   PACs, outlets and social handles are invented for the prototype. */
+/* Paper Trail demo data.
+   Riverton (Measure 4B, gas stoves) is entirely FICTIONAL. The NYC rent freeze
+   board uses fictional posts/outlets with general public policy background. See
+   the note on that board. */
 
 const PT_DATA = (function () {
   const v = (verdict, note) => ({ verdict, note });
@@ -214,6 +215,124 @@ const PT_DATA = (function () {
     ],
   };
 
+  /* NYC rent freeze board: the investigation the problem video's user never got.
+     Social posts, comments, creators and outlets are FICTIONAL (the same ones
+     shown in storyboard/problem-video.html). Policy background is summarized at a
+     general level from public information. No quotes are attributed to the
+     candidate. Verify current figures before presenting. */
+  const mamdani = {
+    id: "b-mamdani",
+    title: "Mamdani's rent freeze: what would it actually do?",
+    question: "Is Mamdani's rent freeze real, and who would it cover?",
+    created: "2026-11-07",
+    category: "Government & Policy", location: "New York City",
+    disclaimer: "Illustrative board. The posts, comments, creators and outlets are fictional (from the problem video). The policy background is a general summary of public information, so verify current figures before presenting.",
+    timeline: [
+      { d: "2015", t: "Rent Guidelines Board votes 0% on one-year stabilized leases", ref: "m5" },
+      { d: "2016", t: "0% on one-year leases again", ref: "m5" },
+      { d: "2020", t: "0% on one-year leases during the pandemic", ref: "m5" },
+      { d: "2025", t: "The Mamdani campaign makes a rent freeze for stabilized tenants a central promise", ref: "m2" },
+      { d: "Every June", t: "The board holds its annual vote on stabilized lease increases", ref: "m3" },
+    ],
+    nodes: [
+      { id: "m1", type: "post", platform: "TikTok", handle: "@citypolicy.daily", x: 1080, y: 520, w: 230, rot: -2, seed: true,
+        title: "\"Mamdani's rent freeze plan, explained in 60 sec 🏙️ Is it real? 👀\"", date: "this week", stats: "486K likes",
+        checks: {
+          bias: b(-1, "Leans favorable", "Upbeat explainer framing (\"is it real? 👀\") with no criticism or tradeoffs mentioned. Sources are only \"in bio\"."),
+          validity: v("partial", "It describes the campaign promise correctly, but skips how a freeze would happen (a Rent Guidelines Board vote) and that it only covers rent-stabilized apartments."),
+          context: "Doesn't mention that the mayor can't freeze rent directly, that only rent-stabilized units are covered, or that the board has frozen one-year leases before.",
+          origin: o(["Explainer by @citypolicy.daily (original)", "Stitched and dueted by 30+ accounts", "Clips reposted to other apps without the caption"], "The original links sources in its bio. The reposts don't."),
+        } },
+      { id: "m2", type: "doc", stamp: "CAMPAIGN PROMISE", x: 470, y: 230, w: 260, rot: 1.5, platform: "Other",
+        title: "Campaign platform: rent freeze", date: "Campaign platform",
+        body: "Pledges to freeze rents for tenants in rent-stabilized apartments, carried out through the mayor's appointments to the Rent Guidelines Board.",
+        checks: { bias: b(1, "Advocacy (campaign material)", "It's a campaign's own description of its promise, so it's persuasive by design."), validity: v("verified", "Matches the campaign's published platform. Verified as what was promised, not as what will happen."), origin: o(["Campaign platform (public)"], "Primary source for the promise itself.") } },
+      { id: "m3", type: "doc", stamp: "HOW IT WORKS", x: 470, y: 760, w: 270, rot: -1, platform: "Government record",
+        title: "NYC Rent Guidelines Board", date: "City agency",
+        body: "Nine members, all appointed by the mayor. Votes once a year on the maximum increases for rent-stabilized leases. A mayor can't set rents directly.",
+        checks: { bias: b(0, "Neutral", "Describes the process."), validity: v("verified", "Matches how the board is set up under city and state rent laws."), origin: o(["NYC Rent Guidelines Board (public)"], "Primary source.") } },
+      { id: "m4", type: "doc", stamp: "WHO'S COVERED", x: 1480, y: 760, w: 260, rot: 1, platform: "Government record",
+        title: "Rent-stabilized ≠ every apartment", date: "City housing data",
+        body: "Roughly 1 million rent-stabilized apartments, home to about 2 million New Yorkers. Market-rate apartments aren't covered by board votes.",
+        checks: { bias: b(0, "Neutral", "Counts."), validity: v("verified", "Approximate figures from public city housing data. Check the latest survey before quoting exact numbers."), origin: o(["NYC housing & vacancy data (public)"], "Primary source.") } },
+      { id: "m5", type: "doc", stamp: "PRECEDENT", x: 180, y: 1050, w: 250, rot: 2, platform: "Government record",
+        title: "It's happened before", date: "Board vote history",
+        body: "The board has voted 0% increases on one-year stabilized leases before:\n2015 · 2016 · 2020",
+        checks: { bias: b(0, "Neutral", "Vote record."), validity: v("verified", "Matches the board's published vote history."), origin: o(["Rent Guidelines Board vote history"], "Primary source.") } },
+      { id: "m6", type: "note", color: "green", agent: "Evidence Checker", x: 1110, y: 960, w: 220, rot: -2,
+        title: "CLAIM: \"every renter\"", body: "CONTRADICTED. A freeze would only apply to rent-stabilized leases, not market-rate apartments." },
+      { id: "m7", type: "note", color: "yellow", agent: "Tracer", x: 150, y: 520, w: 210, rot: -3,
+        title: "WHAT DEPENDS ON WHAT", body: "promise\n→ mayor appoints the board\n→ board votes each June\n→ freeze (or not)" },
+      { id: "m8", type: "folder", x: 690, y: 1120, w: 240, rot: -2, platform: "TikTok",
+        title: "The comment section (1,284)",
+        files: [
+          { t: "\"source??\"", d: "3.2K likes · no answer" },
+          { t: "\"it's only rent-STABILIZED\"", d: "8.1K likes · correct" },
+          { t: "\"landlords stop fixing stuff\"", d: "9.8K likes · a prediction" },
+          { t: "\"mayors can't even do this\"", d: "3.7K likes · half right" },
+          { t: "\"communism speedrun 💀\"", d: "2.7K likes · not a claim" },
+        ],
+        checks: { bias: b(0, "All over the place", "Every lean is represented. The most-liked comments are jokes and predictions."), validity: v("unverified", "Opinions, not sources. Only one of the top comments is a checkable fact, and it's correct."), origin: o(["Comments on @citypolicy.daily's post"], "First-hand reactions.") } },
+      { id: "m9", type: "clip", platform: "News", outlet: "The Metro Ledger", x: 1440, y: 1180, w: 260, rot: -1.5,
+        title: "Rent freeze would help millions of tenants, supporters say", date: "Search result",
+        body: "Advocates say the plan would freeze rents on roughly 1 million rent-stabilized apartments, saving families hundreds a year.",
+        checks: { bias: b(-1, "Leans favorable", "Sourced mainly to supporters."), validity: v("partial", "\"Millions\" counts tenants, not apartments. The apartment figure is right. The savings estimate isn't sourced."), origin: o(["The Metro Ledger (fictional outlet)"], "Original reporting.") } },
+      { id: "m10", type: "clip", platform: "News", outlet: "Daily Brief", x: 1830, y: 1000, w: 250, rot: 2.5,
+        title: "Economists warn a rent freeze could backfire on renters", date: "Search result",
+        body: "Critics argue landlords may defer repairs, and that all renters could end up paying more on new leases.",
+        checks: { bias: b(1, "Leans critical", "Quotes only critics."), validity: v("partial", "The repairs-and-costs debate is real and worth following. \"All renters will pay more\" is a prediction, not a documented fact."), context: "Doesn't mention past 0% votes or what happened after them.", origin: o(["Daily Brief (fictional outlet)"], "Original reporting.") } },
+      { id: "m11", type: "clip", platform: "News", outlet: "Borough Bulletin", x: 2000, y: 640, w: 250, rot: -2,
+        title: "Tenants cheer, landlords sue: what a freeze means for YOUR rent", date: "Search result",
+        body: "Experts say the freeze would affect every renter in the city, from Bushwick to the Upper East Side.",
+        checks: { bias: b(0, "Clickbait", "The headline promises conflict and the body overstates the scope."), validity: v("contradicted", "Market-rate apartments aren't covered by Rent Guidelines Board votes."), origin: o(["Borough Bulletin (fictional outlet)"], "Original reporting.") } },
+      { id: "m12", type: "clip", platform: "News", outlet: "CityWire", x: 860, y: 140, w: 250, rot: -1.5,
+        title: "Fact check: Can a mayor freeze rent on their own?", date: "Search result",
+        body: "Not directly. Increases on stabilized units are set by a nine-member board that votes every year, though the mayor appoints its members.",
+        checks: { bias: b(0, "Center", "Straight explainer."), validity: v("verified", "Matches how the Rent Guidelines Board works."), origin: o(["CityWire (fictional outlet)"], "Original reporting.") } },
+      { id: "m13", type: "folder", x: 1400, y: 150, w: 240, rot: 2, platform: "Other",
+        title: "Sponsored result: nyc-housing-truth.org",
+        files: [
+          { t: "Label", d: "\"Sponsored\" (ranked above every news result)" },
+          { t: "Paid for by", d: "A property owners' coalition (fictional)" },
+          { t: "Headline", d: "\"The TRUTH About Rent Freezes…\"" },
+        ],
+        checks: { bias: b(2, "Strongly against", "Paid advocacy formatted to look like information."), validity: v("unverified", "It's an ad. The ad label and the \"paid for by\" line are the only verifiable parts."), origin: o(["Search ad disclosure"], "Paid placement.") } },
+      { id: "m14", type: "note", color: "pink", agent: "Bias Hound", x: 1720, y: 470, w: 210, rot: 3,
+        title: "SAME POLICY, OPPOSITE FRAMES", body: "\"helps millions\" vs. \"backfire\" vs. \"fantasy\"\nThe ad and the opinion piece ranked above the fact check." },
+      { id: "m15", type: "clip", platform: "News", outlet: "The Gotham Post · Opinion", x: 1800, y: 110, w: 240, rot: 1.5,
+        title: "OPINION: The rent freeze is a fantasy, and voters know it", date: "Search result",
+        body: "A columnist argues the promise sounds great on social media but falls apart on contact with the city budget.",
+        checks: { bias: b(2, "Strongly against", "Opinion column."), validity: v("unverified", "An opinion and a prediction, not a checkable claim. Labeled as opinion, but it shows up in search like news."), origin: o(["The Gotham Post (fictional outlet)"], "Opinion.") } },
+      { id: "m16", type: "note", color: "blue", agent: "Tracer", x: 1000, y: 1290, w: 230, rot: 1.5,
+        title: "OPEN QUESTION", body: "What happens to repairs and building costs under a freeze? The board publishes an annual cost study. That's the source to read next." },
+    ],
+    strings: [
+      { from: "m1", to: "m2", kind: "connects", label: "describes", ev: "The post summarizes the campaign's published rent-freeze pledge." },
+      { from: "m2", to: "m3", kind: "connects", label: "depends on", ev: "The pledge works through mayoral appointments to the Rent Guidelines Board, which votes on stabilized lease increases." },
+      { from: "m7", to: "m2", kind: "changed", label: "breaks down" },
+      { from: "m7", to: "m3", kind: "changed", label: "breaks down" },
+      { from: "m3", to: "m5", kind: "verified", label: "has done it before", ev: "Rent Guidelines Board vote history: 0% on one-year leases in 2015, 2016 and 2020." },
+      { from: "m12", to: "m3", kind: "verified", label: "explains", ev: "Checked against how the Rent Guidelines Board is set up." },
+      { from: "m1", to: "m12", kind: "contradicts", label: "leaves out what this explains" },
+      { from: "m11", to: "m6", kind: "contradicts", label: "evidence-checked by" },
+      { from: "m6", to: "m4", kind: "verified", label: "checked against", ev: "Board votes cover rent-stabilized leases only. Market-rate apartments aren't regulated by them." },
+      { from: "m9", to: "m4", kind: "connects", label: "cites (\"millions\" = tenants)" },
+      { from: "m10", to: "m16", kind: "connects", label: "raises" },
+      { from: "m15", to: "m10", kind: "connects", label: "echoes" },
+      { from: "m13", to: "m10", kind: "money", claimed: true, label: "same talking points? (claimed, not documented)", ev: "The ad and the Daily Brief article use similar arguments. Nothing shows the coalition paid for or shaped the article. It's a claim, not a documented link." },
+      { from: "m14", to: "m9", kind: "connects", label: "flags framing" },
+      { from: "m14", to: "m11", kind: "connects", label: "flags framing" },
+      { from: "m8", to: "m1", kind: "origin", label: "comments on" },
+    ],
+    summary: [
+      { h: "The short version", p: "The promise is real, but the viral versions get the details wrong. The campaign pledged a freeze for rent-stabilized tenants [[m2]]. That would happen through the Rent Guidelines Board [[m3]], not by mayoral order, and it wouldn't touch market-rate apartments [[m4]]." },
+      { h: "Where you probably saw it", p: "A 60-second explainer [[m1]] gets the promise right but skips how it would work. Its comment section [[m8]] has every opinion, and only one of the top comments (\"it's only rent-STABILIZED\") is a checkable fact. It's correct." },
+      { h: "How it would actually work", p: "The mayor appoints all nine board members, and the board votes every June on stabilized lease increases [[m7]]. A fact check [[m12]] explains this clearly. The board has voted 0% on one-year leases before, in 2015, 2016 and 2020 [[m5]]. So a freeze is possible, but it isn't automatic." },
+      { h: "Why the search results disagree", p: "Each result frames the same policy differently [[m14]]. One says it \"helps millions\" [[m9]], which is accurate only if you count tenants rather than apartments. Another says it affects \"every renter\" [[m11]], which is contradicted [[m6]]. A third warns it could backfire [[m10]], which is a real debate but a prediction. An opinion column [[m15]] and a sponsored ad [[m13]] ranked above the fact check." },
+      { h: "What's still open", p: "Whether a freeze helps or hurts over time depends on building costs and repairs. The board's annual cost study is the next source to read [[m16]]." },
+    ],
+  };
+
   const inbox = [
     { id: "s1", platform: "TikTok", handle: "@civicsinsixty", title: "\"Riverton school board just voted to cut ALL arts funding?? here's what happened\"", date: "Nov 5", stats: "88K views" },
     { id: "s2", platform: "X", handle: "@rivertonwatch", title: "\"BREAKING: Mayor's office spent $2 MILLION on a logo redesign. Your tax dollars at work.\"", date: "Nov 6", stats: "4.4K reposts" },
@@ -224,11 +343,12 @@ const PT_DATA = (function () {
   // "Trending" suggestions shown by the Ask bar: the most-investigated questions
   // and sources across Paper Trail users (simulated counts).
   const trending = [
+    { q: "Is Mamdani's rent freeze real, and who would it cover?", label: "Mamdani's rent freeze", source: "@citypolicy.daily · TikTok", count: "9.6K", board: "b-mamdani" },
     { q: "Will Measure 4B really raise my rent 20%?", label: "Measure 4B \"20% rent hike\"", source: "@riverton.realtalk · TikTok", count: "2.4K", board: "b-4b" },
     { q: "Is the city actually banning gas stoves?", label: "Riverton gas stove ban", source: "@homecooking.hq · Instagram", count: "1.8K", board: "b-stoves" },
     { q: "Is Elm Park really being sold to a developer?", label: "Elm Park sold to a developer?", source: "@parkdaily · TikTok", count: "1.1K" },
   ];
 
-  return { boards: [measure4b, gasStoves], inbox, trending };
+  return { boards: [mamdani, measure4b, gasStoves], inbox, trending };
 })();
 export default PT_DATA;

@@ -1,4 +1,5 @@
 import React from "react";
+import Logo from "./Logo.jsx";
 
 export function InboxItem({ p, onPick }) {
   return (
@@ -15,7 +16,7 @@ export default function Drawer({ open, onClose, boards, activeId, inbox, onSwitc
       {open && <div className="scrim" onClick={onClose} />}
       <nav className={"drawer" + (open ? " open" : "")} aria-label="Boards">
         <div className="drawer-head">
-          <span className="brand-mark">paper trail</span>
+          <Logo />
           <button className="icon-btn" aria-label="Close" onClick={onClose}>✕</button>
         </div>
         <button className="new-board" onClick={onNew}>+ New board</button>

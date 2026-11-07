@@ -21,7 +21,13 @@ export function loadState() {
     const raw = localStorage.getItem(STORE_KEY);
     if (raw) {
       const s = JSON.parse(raw);
-      if (s && s.boards && s.boards.length) return s;
+      if (s && s.boards && s.boards.length) {
+        // add any seed boards missing from saved state so new demo boards appear
+        const have = new Set(s.boards.map((b) => b.id));
+        const missing = freshState().boards.filter((b) => !have.has(b.id));
+        if (missing.length) s.boards = [...missing, ...s.boards];
+        return s;
+      }
     }
   } catch (e) { /* storage unavailable */ }
   return freshState();

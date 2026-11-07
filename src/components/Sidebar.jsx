@@ -1,6 +1,7 @@
 import React from "react";
 import { AGENTS, KINDS, VERDICT, LEAN_LABELS } from "../lib/constants.js";
 import { shortTitle } from "../lib/util.js";
+import { TrailPin } from "./Logo.jsx";
 
 /** Renders text with [[nodeId]] citations as numbered buttons that jump to the pin. */
 export function RefText({ text, board, onRef }) {
@@ -41,6 +42,7 @@ function StoryFile({ board, onRef }) {
     <>
       <div className="sf-kicker">Story File{board.category ? " · " + board.category : ""}{board.location ? " · " + board.location : ""}</div>
       <div className="sum-q">{board.question || board.title}</div>
+      {board.disclaimer && <div className="sum-disclaimer">{board.disclaimer}</div>}
       <div className="sum-meta">{sources} sources · {docd} documented connections · {board.strings.length - docd} claimed. Read it here as text if the board gets to be too much. The numbers jump to the pin.</div>
       {(board.summary || []).map((s, i) => (
         <div className="sum-sec" key={i}><h3>{s.h}</h3><p><RefText text={s.p} board={board} onRef={onRef} /></p></div>
@@ -198,7 +200,13 @@ function AgentsTab({ board }) {
     <>
       <div className="drawer-label" style={{ margin: "0 0 8px" }}>Activity log</div>
       {(board.log || []).length
-        ? board.log.slice().reverse().map((l, i) => <div key={i} className="ticker-row done" style={{ animation: "none" }}><span className="ic">✓</span>{l}</div>)
+        ? (
+          <ol className="log-trail">
+            {board.log.slice().reverse().map((l, i) => (
+              <li key={i}><TrailPin /><span>{l}</span></li>
+            ))}
+          </ol>
+        )
         : <p className="muted">Nothing yet.</p>}
 
       <details className="agents-panel">
