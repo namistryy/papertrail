@@ -27,8 +27,6 @@
   #intro { background: radial-gradient(circle at 50% 40%, #2a2420, #0b0a09); display: grid; place-items: center; text-align: center; z-index: 30; }
   #intro .time { font-size: 64px; font-weight: 300; letter-spacing: -2px; }
   #intro .date { color: #aaa; font-size: 15px; margin-top: 4px; }
-  #intro .notif { margin-top: 40px; background: rgba(255,255,255,.12); backdrop-filter: blur(10px); border-radius: 18px; padding: 12px 14px; width: 300px; text-align: left; font-size: 13px; line-height: 1.4; }
-  #intro .notif b { display: block; font-size: 12px; color: #ccc; margin-bottom: 2px; }
 
   /* ---------- feed ---------- */
   #feed { background: #000; overflow: hidden; }
@@ -124,26 +122,10 @@
   #homebar { position: absolute; bottom: 8px; left: 50%; width: 130px; height: 5px; margin-left: -65px; border-radius: 9px; background: rgba(255,255,255,.85); z-index: 55; }
   #homebar.dark { background: rgba(0,0,0,.75); }
 
-  /* ---------- end card ---------- */
-  #endcard { background: #16130f; z-index: 45; opacity: 0; display: flex; flex-direction: column; justify-content: center; padding: 0 30px; }
-  #endcard .l1, #endcard .l2 { font-family: "Special Elite", monospace; font-size: 30px; line-height: 1.2; opacity: 0; }
-  #endcard .l2 { color: var(--accent); margin-top: 6px; }
-  #endcard .l3 { margin-top: 40px; color: var(--ink-2); font-size: 15px; line-height: 1.5; opacity: 0; }
-  #endcard .mark { margin-top: 18px; font-family: "Special Elite", monospace; font-size: 28px; opacity: 0; }
-  #endcard .mark::after { content: "."; color: var(--accent); }
-  #endcard .fine { position: absolute; bottom: 30px; left: 30px; right: 30px; color: #6f665a; font-size: 10.5px; line-height: 1.4; opacity: 0; }
 
-  /* ---------- narration + controls ---------- */
-  .narr { width: min(560px, 100%); min-height: 44px; text-align: center; font-size: 15.5px; line-height: 1.45; color: var(--ink); }
-  .narr .step { font: 600 11px Inter; letter-spacing: 1.6px; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 2px; }
-  .controls { display: flex; align-items: center; gap: 10px; width: min(560px, 100%); }
-  .controls button { width: 38px; height: 38px; border-radius: 50%; border: 1px solid #3a3329; background: #1f1b16; color: var(--ink); font-size: 15px; cursor: pointer; flex: none; }
-  .controls button:hover { border-color: #8f8574; }
-  .controls input { flex: 1; accent-color: var(--accent); }
-  .controls .tm { font-variant-numeric: tabular-nums; font-size: 12.5px; color: var(--ink-2); width: 76px; text-align: right; }
-  .chapters { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; width: min(560px, 100%); }
-  .chapters button { border: 1px solid #3a3329; background: transparent; color: var(--ink-2); border-radius: 99px; padding: 3px 10px; font-size: 11.5px; cursor: pointer; }
-  .chapters button.on { border-color: var(--accent); color: var(--ink); }
+  /* screen-only mode (?screen): drop the device frame */
+  body.screen-only .phone { padding: 0; background: none; box-shadow: none; border-radius: 44px; }
+  body.screen-only .phone-wrap { width: calc(364px * var(--s, 1)); height: calc(760px * var(--s, 1)); }
 </style>
 </head>
 <body>
@@ -156,8 +138,7 @@
     <div class="layer" id="intro">
       <div>
         <div class="time">9:41</div>
-        <div class="date">Tuesday, late night</div>
-        <div class="notif"><b>VIDEO APP · now</b>Your For You feed has new videos 🔥</div>
+        <div class="date">Tuesday, October 14</div>
       </div>
     </div>
 
@@ -194,30 +175,15 @@
 
     <div id="dim"></div>
     <div id="thought"></div>
-    <div class="layer" id="endcard">
-      <div class="l1">Information is everywhere.</div>
-      <div class="l2">Context is nowhere.</div>
-      <div class="l3">Every headline has a paper trail.<br />Nobody has time to follow it alone.</div>
-      <div class="mark">paper trail</div>
-      <div class="fine">Illustrative mockup. Creators, comments, outlets and headlines are fictional and don't represent real coverage or real statements by any candidate.</div>
-    </div>
     <div id="homebar"></div>
     <div id="finger"></div>
   </div></div></div>
 
-  <div class="narr" id="narr"></div>
-  <div class="controls">
-    <button id="play" aria-label="Play or pause">❚❚</button>
-    <button id="restart" aria-label="Restart">↺</button>
-    <input type="range" id="scrub" min="0" max="47" step="0.01" value="0" aria-label="Timeline" />
-    <span class="tm" id="tm">0:00 / 0:47</span>
-  </div>
-  <div class="chapters" id="chapters"></div>
 </div>
 
 <script>
 (() => {
-  const DUR = 47;
+  const DUR = 42; // ends back in the feed, right after the last swipe
   const $ = (s) => document.querySelector(s);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
@@ -326,24 +292,7 @@
   const clashEls = [...document.querySelectorAll(".clash")];
 
   // ---------------- timeline ----------------
-  const NARR = [
-    [0, 2.5, "9:41 PM", "Can't sleep. Opens the video app."],
-    [2.5, 7, "The feed", "Pasta. A dance. Mindless scrolling."],
-    [7, 10, "A political post", "A post about Zohran Mamdani's campaign and its rent-freeze promise. It sounds like a big deal. Is it real?"],
-    [10, 19, "The comments", "They open the comments to get other perspectives and find jokes, insults, \"source??\", and confident takes pointing every direction."],
-    [19, 23.5, "Going to the source", "So they switch over to search to find out what's actually true."],
-    [23.5, 33, "Information overload", "Ads, paywalls, opinion pieces, and headlines that contradict each other. Is it 1 million apartments, or every renter? Can the mayor even do it?"],
-    [33, 37, "Giving up", "Twelve tabs later, they still don't know who to trust."],
-    [37, 42, "Back to the feed", "So they close it all and go back to scrolling, no closer to understanding the issue."],
-    [42, 47, "The problem", "Getting from a headline to the evidence behind it is too hard. Most people give up."],
-  ];
-  const CHAPTERS = [["Feed", 2.5], ["Political post", 7], ["Comments", 10], ["Search", 19], ["Overload", 23.5], ["Gives up", 33], ["Back to scrolling", 37], ["End", 42]];
-  const THOUGHTS = [
-    [13.0, 15.2, "wait… so is it true or not?"],
-    [15.6, 17.9, "these are all just opinions 😵‍💫"],
-    [29.6, 31.9, "1 million apartments? every renter?? a board votes???"],
-    [33.2, 35.4, "ugh. which one is right?"],
-    [35.6, 36.6, "…never mind."],
+  const THOUGHTS = [ // thought bubbles removed; the frustration reads through the action alone
   ];
   // gestures: [t0, t1, x0, y0, x1, y1]
   const GESTURES = [
@@ -363,7 +312,7 @@
   const el = {
     intro: $("#intro"), feed: $("#feed"), sheet: $("#sheet"), cList: $("#cList"), search: $("#search"), sList: $("#sList"),
     query: $("#query"), tabsN: $("#tabsN"), paywall: $("#paywall"), pwCard: $("#paywall .card"), cookie: $("#cookie"), tabToast: $("#tabToast"),
-    thought: $("#thought"), dim: $("#dim"), finger: $("#finger"), end: $("#endcard"), narr: $("#narr"), heart: $("#heart"),
+    thought: $("#thought"), dim: $("#dim"), finger: $("#finger"), heart: $("#heart"),
     status: $("#statusbar"), homebar: $("#homebar"), switcher: $("#switcher"), vidProg: $("#vidProg"), screen: $("#screen"), paaAns: $("#paaAns"),
   };
   const cMax = () => Math.max(0, el.cList.scrollHeight - $("#cView").clientHeight);
@@ -428,9 +377,7 @@
     el.tabToast.style.opacity = lastTab ? win(t, lastTab[0], lastTab[0] + 0.8, 0.15) : 0;
     el.tabToast.textContent = tabs + " tabs open";
 
-    // frustration: shake + dim
-    const shake = win(t, 34.0, 35.2, 0.2);
-    el.screen.style.transform = shake ? `translateX(${Math.sin(t * 70) * 4 * shake}px)` : "";
+    // giving up: a brief dim before swiping home
     el.dim.style.opacity = win(t, 33.0, 36.2, 0.5) * 0.35;
 
     // thought bubbles
@@ -452,38 +399,21 @@
       el.finger.style.transform = tap && t >= g[0] && t <= g[1] + 0.1 ? "scale(.8)" : "scale(1)";
     } else el.finger.style.opacity = 0;
 
-    // end card
-    el.end.style.opacity = seg(t, 42, 42.6);
-    el.end.style.pointerEvents = t > 42 ? "auto" : "none";
-    el.end.querySelector(".l1").style.opacity = seg(t, 42.5, 43.1);
-    el.end.querySelector(".l2").style.opacity = seg(t, 43.4, 44.0);
-    el.end.querySelector(".l3").style.opacity = seg(t, 44.4, 45.0);
-    el.end.querySelector(".mark").style.opacity = seg(t, 45.3, 45.9);
-    el.end.querySelector(".fine").style.opacity = seg(t, 45.6, 46.2);
 
-    // narration
-    const nr = NARR.find(([a, b]) => t >= a && t < b) || NARR[NARR.length - 1];
-    const key = nr[0];
-    if (el.narr.dataset.k != key) { el.narr.dataset.k = key; el.narr.innerHTML = `<span class="step">${nr[2]}</span>${nr[3]}`; }
-    document.querySelectorAll("#chapters button").forEach((b) => b.classList.toggle("on", +b.dataset.t <= t && t < +b.dataset.end));
   }
 
   // ---------------- playback ----------------
+  // No on-screen controls, so the page is just the phone for screen recording.
+  // Keys: Space = pause/play, R = restart, ← / → = skip 2s. Click the phone to restart once it ends.
   let t = 0, playing = true, last = null;
-  const scrub = $("#scrub"), tm = $("#tm"), playBtn = $("#play");
-  const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
-  $("#chapters").innerHTML = CHAPTERS.map(([n, s], i) => `<button data-t="${s}" data-end="${CHAPTERS[i + 1] ? CHAPTERS[i + 1][1] : DUR + 1}">${n}</button>`).join("");
-  $("#chapters").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { t = +b.dataset.t; setPlaying(true); } });
-  function setPlaying(p) { playing = p; playBtn.textContent = p ? "❚❚" : "▶"; last = null; if (p && t >= DUR) t = 0; }
-  playBtn.onclick = () => setPlaying(!playing);
-  $("#restart").onclick = () => { t = 0; setPlaying(true); };
-  scrub.addEventListener("input", () => { t = +scrub.value; render(t); });
-  scrub.addEventListener("pointerdown", () => setPlaying(false));
+  function setPlaying(p) { playing = p; last = null; if (p && t >= DUR) t = 0; }
   document.addEventListener("keydown", (e) => {
     if (e.code === "Space") { e.preventDefault(); setPlaying(!playing); }
+    if (e.code === "KeyR") { t = 0; setPlaying(true); }
     if (e.code === "ArrowRight") t = Math.min(DUR, t + 2);
     if (e.code === "ArrowLeft") t = Math.max(0, t - 2);
   });
+  document.addEventListener("click", () => { if (t >= DUR) { t = 0; setPlaying(true); } });
   function frame(now) {
     if (playing) {
       if (last != null) t += (now - last) / 1000;
@@ -491,14 +421,14 @@
       if (t >= DUR) { t = DUR; setPlaying(false); }
     }
     render(t);
-    scrub.value = t;
-    tm.textContent = `${fmt(t)} / ${fmt(DUR)}`;
     requestAnimationFrame(frame);
   }
   function fit() {
-    const s = Math.min(1, (window.innerHeight - 170) / 788, (window.innerWidth - 32) / 392);
+    const so = document.body.classList.contains("screen-only");
+    const s = Math.min((window.innerHeight - 24) / (so ? 760 : 788), (window.innerWidth - 24) / (so ? 364 : 392));
     document.documentElement.style.setProperty("--s", Math.max(0.4, s));
   }
+  if (new URLSearchParams(location.search).has("screen")) document.body.classList.add("screen-only");
   window.addEventListener("resize", fit);
   fit();
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => requestAnimationFrame(frame));
