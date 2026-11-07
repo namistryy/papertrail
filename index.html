@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Receipts</title>
+  <meta name="description" content="Receipts: follow the story, not the headline. Every headline has a paper trail. An interactive evidence-board prototype." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=Special+Elite&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- ===== Top bar ===== -->
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" aria-label="Open boards menu" title="Boards">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="brand">
+        <span class="brand-mark">receipts</span>
+        <span class="brand-sep">/</span>
+        <input id="boardTitle" class="board-title" aria-label="Board title" spellcheck="false" />
+      </div>
+      <div class="topbar-right">
+        <span class="demo-chip" title="Riverton and everyone in it are fictional. Agents are simulated.">Illustrative concept · fictional data</span>
+        <button class="pill-btn" id="discoverBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"/><path d="M20 20l-4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Discover</span>
+        </button>
+        <button class="pill-btn" id="analyticsBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+          <span>Analytics</span>
+        </button>
+        <button class="icon-btn" id="sidebarToggle" aria-label="Toggle case file panel" title="Case file panel">
+          <svg viewBox="0 0 24 24" width="20" height="20"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M15 4v16" stroke="currentColor" stroke-width="2"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===== Main ===== -->
+    <main class="main">
+      <section class="board-wrap" id="boardWrap">
+        <div class="cork" id="viewport">
+          <div class="world" id="world">
+            <svg class="strings" id="strings" width="4000" height="3000"></svg>
+            <div class="nodes" id="nodes"></div>
+          </div>
+        </div>
+
+        <!-- Empty state for new boards -->
+        <div class="empty" id="emptyState" hidden>
+          <div class="empty-card">
+            <div class="empty-stamp">NEW CASE</div>
+            <h2>Every headline has a paper trail. Follow it.</h2>
+            <p>Start with something you actually saw: a post you shared from Instagram, TikTok or X, or a screenshot. Ask Receipts a question and the detective agents will pin up the original documents, the people and money involved, what changed, and what's still unknown.</p>
+            <div class="empty-inbox" id="emptyInbox"></div>
+            <div class="empty-or">or just type a question ↓</div>
+          </div>
+        </div>
+
+        <!-- Agent activity ticker -->
+        <div class="ticker" id="ticker" hidden></div>
+
+        <!-- Legend -->
+        <div class="legend" id="legend"></div>
+
+        <!-- Zoom controls -->
+        <div class="zoom">
+          <button id="zoomIn" aria-label="Zoom in">+</button>
+          <button id="zoomOut" aria-label="Zoom out">−</button>
+          <button id="zoomFit" aria-label="Fit board" title="Fit board">⤢</button>
+        </div>
+
+        <!-- Composer -->
+        <div class="composer-wrap">
+          <div class="composer-context" id="composerContext" hidden></div>
+          <div class="attach-preview" id="attachPreview" hidden></div>
+          <form class="composer" id="composer" autocomplete="off">
+            <div class="plus-wrap">
+              <button type="button" class="plus-btn" id="plusBtn" aria-label="Add sources">+</button>
+              <div class="plus-menu" id="plusMenu" hidden>
+                <button type="button" data-act="upload">📷 Upload a screenshot</button>
+                <button type="button" data-act="inbox">📥 From your share inbox</button>
+                <button type="button" data-act="note">🗒️ Add a sticky note</button>
+              </div>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" hidden />
+            <input id="prompt" class="prompt" placeholder="Ask Receipts…" />
+            <button class="send-btn" type="submit" aria-label="Send">
+              <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Analytics view -->
+      <section class="analytics" id="analytics" hidden></section>
+
+      <!-- ===== Sidebar ===== -->
+      <aside class="sidebar" id="sidebar">
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="summary" role="tab">Story File</button>
+          <button class="tab" data-tab="inspect" role="tab">Inspect</button>
+          <button class="tab" data-tab="agents" role="tab">Agents</button>
+        </div>
+        <div class="tab-body" id="tab-summary"></div>
+        <div class="tab-body" id="tab-inspect" hidden></div>
+        <div class="tab-body" id="tab-agents" hidden></div>
+      </aside>
+    </main>
+
+    <!-- ===== Drawer ===== -->
+    <div class="scrim" id="scrim" hidden></div>
+    <nav class="drawer" id="drawer" aria-label="Boards">
+      <div class="drawer-head">
+        <span class="brand-mark">receipts</span>
+        <button class="icon-btn" id="drawerClose" aria-label="Close">✕</button>
+      </div>
+      <button class="new-board" id="newBoardBtn">+ New board</button>
+      <div class="drawer-label">Your boards</div>
+      <div id="boardList"></div>
+      <div class="drawer-label">Shared to Receipts <span class="badge" id="inboxCount"></span></div>
+      <div id="drawerInbox"></div>
+      <div class="drawer-foot">
+        <button class="link-btn" id="drawerDiscover">🧭 Discover investigations</button>
+        <button class="link-btn" id="drawerAnalytics">📊 Where you get your info</button>
+        <button class="link-btn" id="resetDemo">↺ Reset demo data</button>
+      </div>
+    </nav>
+
+    <!-- Folder modal -->
+    <div class="modal" id="modal" hidden>
+      <div class="modal-card" id="modalCard"></div>
+    </div>
+
+    <div class="toast" id="toast" hidden></div>
+    <div class="string-tip" id="stringTip" hidden></div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
