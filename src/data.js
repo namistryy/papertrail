@@ -2,7 +2,7 @@
    Everything here is FICTIONAL: the city of Riverton, its council members,
    PACs, outlets and social handles are invented for the prototype. */
 
-window.PT_DATA = (function () {
+const PT_DATA = (function () {
   const v = (verdict, note) => ({ verdict, note });
   const b = (lean, label, note) => ({ lean, label, note });
   const o = (chain, note) => ({ chain, note });
@@ -235,3 +235,4 @@ window.PT_DATA = (function () {
 
   return { boards: [measure4b, gasStoves], inbox, discover, categories };
 })();
+export default PT_DATA;

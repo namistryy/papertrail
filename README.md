@@ -7,11 +7,12 @@ Receipts is an interactive prototype of an investigative "murder board" for poli
 > Illustrative product concept. The city of Riverton and every person, PAC, outlet and handle in the demo are fictional. Agent output is simulated with templates, so the prototype runs offline.
 
 ## Run it
-No build step. Open `index.html`, or serve the folder:
+Built with React 18 + Vite.
 ```
-python -m http.server 8765
+npm install
+npm run dev      # local dev server
+npm run build    # production build in dist/ (relative paths, so it works on GitHub Pages)
 ```
-It also works as-is on GitHub Pages.
 
 ## Features
 - **Evidence Board**: a pannable, zoomable cork board with polaroid social posts, typed documents, newspaper clippings, sticky notes and manila folders you can open. Drag pins around to rearrange them.
@@ -28,8 +29,10 @@ It also works as-is on GitHub Pages.
 
 State is saved in `localStorage`. Use "Reset demo data" in the menu to start over.
 
-## Files
-- `index.html`: layout
-- `styles.css`: cork board, paper and chrome styling
-- `data.js`: fictional seed boards, share inbox, Discover catalog
-- `app.js`: board engine, strings, agents (simulated), Story File, Paper Trail, Discover, Analytics
+## Structure
+- `src/App.jsx`: app state, persistence, and the ask / generate / dig-deeper flows
+- `src/components/`: `Board` (pan/zoom, strings, drag), `Card`, `Sidebar` (Story File, Inspect, Agents), `Composer`, `Drawer`, `Modals` (folder, string evidence, Paper Trail), `Discover`, `Analytics`
+- `src/lib/agents.js`: simulated detective agents as pure functions. Swap these for real model calls.
+- `src/lib/`: constants, utilities (word diff, string geometry), localStorage store
+- `src/data.js`: fictional seed boards, share inbox, Discover catalog
+- `src/styles.css`: cork board, paper and chrome styling
