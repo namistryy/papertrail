@@ -127,7 +127,7 @@ const PT_DATA = (function () {
       { from: "n1", to: "n9", kind: "contradicts", label: "contradicted by" },
       { from: "n9", to: "n8", kind: "verified", label: "checked against", ev: "City Fiscal Office report FO-26-031, household cost table, p. 3." },
       { from: "n1", to: "n11", kind: "origin", label: "reposted as" },
-      { from: "n2", to: "n3", kind: "changed", label: "amended into", ev: "City Clerk file 2026-14, versions v1 → v4. Open the Paper Trail on either document to compare the text." },
+      { from: "n2", to: "n3", kind: "changed", label: "amended into", ev: "City Clerk file 2026-14, versions v1 → v4. Open Version History on either document to compare the text." },
       { from: "n4", to: "n2", kind: "changed", label: "compares" },
       { from: "n4", to: "n3", kind: "changed", label: "compares" },
       { from: "n5", to: "n2", kind: "connects", label: "introduced" },
@@ -221,18 +221,14 @@ const PT_DATA = (function () {
     { id: "s4", platform: "TikTok", handle: "@parkdaily", title: "\"They're quietly selling Elm Park to a developer and nobody's talking about it\"", date: "Nov 7", stats: "152K views" },
   ];
 
-  const discover = [
-    { board: "b-4b" },
-    { board: "b-stoves" },
-    { title: "Riverton school arts budget: cut, or moved?", category: "Government & Policy", location: "Riverton", blurb: "A viral TikTok says all arts funding is gone. The budget has three line items to follow." },
-    { title: "Prop 12: who paid for the ads?", category: "Elections & Campaigns", location: "State", blurb: "Two committees, one consultant, and $3.1M in ad buys. Follow the disclosures." },
-    { title: "Who drafted the state data-privacy bill?", category: "Corporate & Political Power", location: "State", blurb: "Metadata in the bill's PDF points somewhere unexpected. Compare it with the model legislation." },
-    { title: "The port contract: three countries, one deal", category: "International Affairs", location: "Global", blurb: "A shipping deal, a trade minister's statement, and a contract amendment nobody covered." },
-    { title: "Is the Mayor's $2M logo story real?", category: "Media & Misinformation", location: "Riverton", blurb: "The number is real. What it paid for is a different story." },
-    { title: "Elm Park: sold, leased, or neither?", category: "Money & Influence", location: "Riverton", blurb: "A land-use filing, a developer's donations, and a council agenda item from April." },
+  // "Trending" suggestions shown by the Ask bar: the most-investigated questions
+  // and sources across Paper Trail users (simulated counts).
+  const trending = [
+    { q: "Will Measure 4B really raise my rent 20%?", label: "Measure 4B \"20% rent hike\"", source: "@riverton.realtalk · TikTok", count: "2.4K", board: "b-4b" },
+    { q: "Is the city actually banning gas stoves?", label: "Riverton gas stove ban", source: "@homecooking.hq · Instagram", count: "1.8K", board: "b-stoves" },
+    { q: "Is Elm Park really being sold to a developer?", label: "Elm Park sold to a developer?", source: "@parkdaily · TikTok", count: "1.1K" },
   ];
-  const categories = ["Government & Policy", "Elections & Campaigns", "Money & Influence", "International Affairs", "Corporate & Political Power", "Media & Misinformation"];
 
-  return { boards: [measure4b, gasStoves], inbox, discover, categories };
+  return { boards: [measure4b, gasStoves], inbox, trending };
 })();
 export default PT_DATA;

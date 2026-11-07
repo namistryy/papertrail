@@ -504,7 +504,7 @@ table.dt td:last-child, table.dt th:last-child { text-align: right; font-variant
 .string-tip { position: fixed; z-index: 90; pointer-events: none; background: #0e0c0a; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 5px 9px; font-size: 12px; }
 
 
-/* ===== Receipts additions ===== */
+/* ===== Paper Trail additions ===== */
 .sf-kicker { font: 600 11px var(--font-ui); letter-spacing: 1.4px; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
 .sum-q { font-family: var(--font-news) !important; font-size: 23px !important; font-weight: 700; color: var(--ink) !important; line-height: 1.2 !important; margin-bottom: 8px !important; }
 .qa-src { font-size: 11px; color: var(--ink-3); margin-top: 8px; }
@@ -561,6 +561,14 @@ table.dt td:last-child, table.dt th:last-child { text-align: right; font-variant
 .disc-title { font: 700 19px/1.2 var(--font-news); }
 .disc-blurb { font-size: 13px; line-height: 1.5; color: #5a5045; }
 .disc-foot { margin-top: auto; font-size: 12.5px; font-weight: 600; color: var(--paper-ink); border-top: 1px dashed #d6cab4; padding-top: 8px; }
+
+/* trending searches by the Ask bar */
+.trending { display: flex; align-items: center; gap: 6px; margin: 0 0 8px 6px; flex-wrap: wrap; }
+.trending-label { font-size: 12px; font-weight: 600; color: var(--ink-2); background: rgba(22,19,15,.88); padding: 5px 9px; border-radius: 99px; }
+.trend-chip { display: inline-flex; align-items: center; gap: 7px; max-width: 100%; border: 1px solid var(--line); background: rgba(22,19,15,.92); backdrop-filter: blur(6px); border-radius: 99px; padding: 5px 11px; font-size: 12.5px; color: var(--ink); }
+.trend-chip:hover { border-color: var(--accent); }
+.trend-chip b { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trend-chip span { color: var(--ink-3); font-size: 11.5px; white-space: nowrap; }
 
 /* ===== Responsive ===== */
 @media (max-width: 1000px) {

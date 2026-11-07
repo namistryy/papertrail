@@ -9,13 +9,13 @@ export function InboxItem({ p, onPick }) {
   );
 }
 
-export default function Drawer({ open, onClose, boards, activeId, inbox, onSwitch, onNew, onPickInbox, onDiscover, onAnalytics, onReset }) {
+export default function Drawer({ open, onClose, boards, activeId, inbox, onSwitch, onNew, onPickInbox, onAnalytics, onReset }) {
   return (
     <>
       {open && <div className="scrim" onClick={onClose} />}
       <nav className={"drawer" + (open ? " open" : "")} aria-label="Boards">
         <div className="drawer-head">
-          <span className="brand-mark">receipts</span>
+          <span className="brand-mark">paper trail</span>
           <button className="icon-btn" aria-label="Close" onClick={onClose}>✕</button>
         </div>
         <button className="new-board" onClick={onNew}>+ New board</button>
@@ -33,14 +33,13 @@ export default function Drawer({ open, onClose, boards, activeId, inbox, onSwitc
             </button>
           );
         })}
-        <div className="drawer-label">Shared to Receipts {inbox.length > 0 && <span className="badge">{inbox.length}</span>}</div>
+        <div className="drawer-label">Shared to Paper Trail {inbox.length > 0 && <span className="badge">{inbox.length}</span>}</div>
         <div className="drawer-inbox">
           {inbox.length
             ? inbox.map((p) => <InboxItem key={p.id} p={p} onPick={onPickInbox} />)
-            : <p className="muted" style={{ padding: "0 6px" }}>Share a post from Instagram, TikTok or X to Receipts and it lands here.</p>}
+            : <p className="muted" style={{ padding: "0 6px" }}>Share a post from Instagram, TikTok or X to Paper Trail and it lands here.</p>}
         </div>
         <div className="drawer-foot">
-          <button className="link-btn" onClick={onDiscover}>🧭 Discover investigations</button>
           <button className="link-btn" onClick={onAnalytics}>📊 Where you get your info</button>
           <button className="link-btn" onClick={onReset}>↺ Reset demo data</button>
         </div>

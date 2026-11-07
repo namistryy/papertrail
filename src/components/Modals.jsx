@@ -85,7 +85,7 @@ export function PaperTrailModal({ n, onClose }) {
   });
   return (
     <Shell className="modal-card paper wide" onClose={onClose}>
-      <div className="sf-kicker" style={{ color: "#8a7d6c" }}>Paper Trail · how the decision changed</div>
+      <div className="sf-kicker" style={{ color: "#8a7d6c" }}>Version History · how the decision changed</div>
       <h3>{n.title.replace(/ — (Final|Draft)$/, "")}</h3>
       <div className="pt-steps">
         {V.map((v, i) => (

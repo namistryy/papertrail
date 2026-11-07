@@ -1,8 +1,8 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { shortTitle } from "../lib/util.js";
 
-/** Bottom "Ask Receipts" bar: question input, + menu (screenshot upload, share inbox, sticky note). */
-const Composer = forwardRef(function Composer({ placeholder, context, onClearContext, attach, setAttach, onAsk, onOpenInbox, onAddNote }, ref) {
+/** Bottom "Ask Paper Trail" bar: question input, + menu (screenshot upload, share inbox, sticky note). */
+const Composer = forwardRef(function Composer({ placeholder, context, onClearContext, attach, setAttach, onAsk, onOpenInbox, onAddNote, trending = [], onTrending }, ref) {
   const [text, setText] = useState("");
   const [menu, setMenu] = useState(false);
   const inputRef = useRef(null);
@@ -55,6 +55,16 @@ const Composer = forwardRef(function Composer({ placeholder, context, onClearCon
 
   return (
     <div className="composer-wrap">
+      {!text && !context && !attach && trending.length > 0 && (
+        <div className="trending" aria-label="Trending searches">
+          <span className="trending-label">🔥 Trending</span>
+          {trending.slice(0, 3).map((t) => (
+            <button key={t.q} type="button" className="trend-chip" title={`${t.q}\nTop source: ${t.source}`} onClick={() => onTrending(t)}>
+              <b>{t.label}</b><span>{t.count} looking</span>
+            </button>
+          ))}
+        </div>
+      )}
       {context && (
         <div className="composer-context">
           <span>Asking about</span><b>{shortTitle(context)}</b>

@@ -3,7 +3,7 @@ import Board from "./components/Board.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import Composer from "./components/Composer.jsx";
 import Drawer, { InboxItem } from "./components/Drawer.jsx";
-import Discover from "./components/Discover.jsx";
+import PT_DATA from "./data.js";
 import Analytics from "./components/Analytics.jsx";
 import { FolderModal, EvidenceModal, PaperTrailModal } from "./components/Modals.jsx";
 import { loadState, saveState, freshState } from "./lib/store.js";
@@ -219,11 +219,13 @@ export default function App() {
   }
   const dig = (id) => (busy.current ? showToast("The agents are still working…") : runDig(S.activeId, id, null));
 
-  async function startFromDiscover(d) {
+  // trending searches by the Ask bar: open the existing board, or start a new investigation
+  function openTrending(t) {
     if (busy.current) return showToast("The agents are still working…");
+    if (t.board && S.boards.some((b) => b.id === t.board)) return switchBoard(t.board);
     const id = newBoard();
-    updateBoard(id, (b) => ({ ...b, category: d.category, location: d.location, question: d.title, title: d.title }));
-    runGenerate(id, d.title, null);
+    updateBoard(id, (b) => ({ ...b, question: t.q, title: t.q }));
+    runGenerate(id, t.q, null);
   }
 
   // ----- modals -----
@@ -255,17 +257,13 @@ export default function App() {
           <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
         </button>
         <div className="brand">
-          <span className="brand-mark">receipts</span>
+          <span className="brand-mark">paper trail</span>
           <span className="brand-sep">/</span>
           <input className="board-title" aria-label="Board title" spellCheck={false} value={board.title}
             onChange={(e) => updateBoard(board.id, (b) => ({ ...b, title: e.target.value }))} />
         </div>
         <div className="topbar-right">
           <span className="demo-chip" title="Riverton and everyone in it are fictional. Agents are simulated.">Illustrative concept · fictional data</span>
-          <button className={"pill-btn" + (view === "discover" ? " active" : "")} onClick={() => toggleView("discover")}>
-            <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" fill="none" /><path d="M20 20l-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-            <span>Discover</span>
-          </button>
           <button className={"pill-btn" + (view === "analytics" ? " active" : "")} onClick={() => toggleView("analytics")}>
             <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" /></svg>
             <span>Analytics</span>
@@ -287,7 +285,7 @@ export default function App() {
               <div className="empty-card">
                 <div className="empty-stamp">NEW CASE</div>
                 <h2>Every headline has a paper trail. Follow it.</h2>
-                <p>Start with something you actually saw: a post you shared from Instagram, TikTok or X, or a screenshot. Ask Receipts a question and the detective agents will pin up the original documents, the people and money involved, what changed, and what's still unknown.</p>
+                <p>Start with something you actually saw: a post you shared from Instagram, TikTok or X, or a screenshot. Ask Paper Trail a question and the detective agents will pin up the original documents, the people and money involved, what changed, and what's still unknown.</p>
                 <div className="empty-inbox">{S.inbox.map((p) => <InboxItem key={p.id} p={p} onPick={pickInbox} />)}</div>
                 <div className="empty-or">or just type a question ↓</div>
               </div>
@@ -305,17 +303,16 @@ export default function App() {
           )}
 
           <Composer ref={composer}
-            placeholder={placeholder || (board.nodes.length ? "Ask Receipts a follow-up, or select a pin to dig into it…" : "Ask Receipts a question to open an investigation…")}
+            placeholder={placeholder || (board.nodes.length ? "Ask Paper Trail a follow-up, or select a pin to dig into it…" : "Ask Paper Trail a question to open an investigation…")}
             context={selectedNode} onClearContext={() => setSelected(null)}
             attach={attach} setAttach={setAttach} onAsk={ask}
-            onOpenInbox={() => setDrawerOpen(true)} onAddNote={addUserNote} />
+            onOpenInbox={() => setDrawerOpen(true)} onAddNote={addUserNote}
+            trending={ticker ? [] : PT_DATA.trending.filter((t) => t.board !== board.id)} onTrending={openTrending} />
         </section>
 
-        {view !== "board" && (
+        {view === "analytics" && (
           <section className="analytics">
-            {view === "analytics"
-              ? <Analytics boards={S.boards} onOpenBoard={switchBoard} />
-              : <Discover boards={S.boards} onOpenBoard={switchBoard} onStart={startFromDiscover} />}
+            <Analytics boards={S.boards} onOpenBoard={switchBoard} />
           </section>
         )}
 
@@ -326,7 +323,6 @@ export default function App() {
 
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} boards={S.boards} activeId={S.activeId} inbox={S.inbox}
         onSwitch={switchBoard} onNew={newBoard} onPickInbox={pickInbox}
-        onDiscover={() => { setDrawerOpen(false); setView("discover"); }}
         onAnalytics={() => { setDrawerOpen(false); setView("analytics"); }} onReset={resetDemo} />
 
       {modal && modal.type === "folder" && modalNode && (

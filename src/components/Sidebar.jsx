@@ -55,7 +55,7 @@ function StoryFile({ board, onRef }) {
           </ol>
         </div>
       )}
-      {(board.qa || []).length > 0 && <div className="sum-sec"><h3>Ask Receipts</h3></div>}
+      {(board.qa || []).length > 0 && <div className="sum-sec"><h3>Ask Paper Trail</h3></div>}
       {(board.qa || []).map((q, i) => (
         <div className="qa" key={i}>
           <div className="qa-q">{q.q}</div>
@@ -130,7 +130,7 @@ function Inspect({ board, n, actions }) {
         <button className="btn primary" onClick={() => actions.dig(n.id)}>🧵 Dig deeper</button>
         <button className="btn" onClick={() => actions.focus(n.id)}>🔍 Zoom in</button>
         {n.type === "folder" && <button className="btn" onClick={() => actions.openFolder(n.id)}>📂 Open</button>}
-        {(n.versions || n.versionsOf) && <button className="btn" onClick={() => actions.openPaperTrail(n.id)}>📜 Paper Trail</button>}
+        {(n.versions || n.versionsOf) && <button className="btn" onClick={() => actions.openPaperTrail(n.id)}>📜 Version History</button>}
         <button className="btn" title="Remove from board" onClick={() => actions.remove(n.id)}>🗑</button>
       </div>
       <div className="chips">
