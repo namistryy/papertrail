@@ -29,6 +29,13 @@ npm run build    # production build in dist/ (relative paths, so it works on Git
 
 State is saved in `localStorage`. Use "Reset demo data" in the menu to start over.
 
+## Share a board
+Use the Share board button in the header to copy a snapshot link or download a JSON board file. Friends can open the link or import the file from the same dialog. Opening a shared board adds an editable copy alongside existing boards; later edits are not synced. Snapshots include the board's notes, uploaded images, findings, and card positions.
+
+Links carry compressed snapshot data in the URL fragment and need a publicly reachable deployment of Paper Trail. Localhost links work only on the sender's computer. Large snapshots can use the file option; both formats have a 2 MB limit. No sharing server or account is required.
+
+Sharing checks: `node --test src/lib/shareBoard.test.js`.
+
 ## Structure
 - `src/App.jsx`: app state, persistence, and the ask / generate / dig-deeper flows
 - `src/components/`: `Board` (pan/zoom, strings, drag), `Card`, `Sidebar` (Story File, Inspect, Agents), `Composer`, `Drawer`, `Modals` (folder, string evidence, Version History), `Analytics`

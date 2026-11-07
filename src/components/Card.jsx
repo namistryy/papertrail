@@ -29,7 +29,7 @@ function Badges({ n, style }) {
 
 const STAMP_COLOR = { AMENDED: "#7d3fb0", ORIGINAL: "#2f6fd6" };
 
-function Inner({ n, onOpenFolder }) {
+function Inner({ n, onOpenFolder, onGo }) {
   switch (n.type) {
     case "post":
       return (
@@ -96,16 +96,19 @@ function Inner({ n, onOpenFolder }) {
   }
 }
 
-export default function Card({ n, lit, selected, dragging, drop, onOpenFolder }) {
+export default function Card({ n, lit, selected, dragging, drop, onOpenFolder, onGo }) {
   const cls = ["card", n.type, n.color || "", lit ? "lit" : "", selected ? "selected" : "", dragging ? "dragging" : "", drop != null ? "drop" : ""].join(" ");
   return (
     <div
       className={cls}
       data-id={n.id}
+      tabIndex={0}
+      aria-label={`Inspect ${n.title}`}
+      onKeyDown={e => { if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onGo?.(n.id); } }}
       style={{ left: n.x, top: n.y, width: n.w || 230, "--rot": (n.rot || 0) + "deg", animationDelay: drop ? drop + "ms" : undefined }}
     >
       <span className="pin" style={{ "--pin": PIN[n.type] || "#c0392b" }} />
-      <Inner n={n} onOpenFolder={onOpenFolder} />
+      <Inner n={n} onOpenFolder={onOpenFolder} onGo={onGo} />
     </div>
   );
 }

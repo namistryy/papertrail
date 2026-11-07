@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Board from "./components/Board.jsx";
+import ShareBoardModal from "./components/ShareBoardModal.jsx";
+import { readShareURL } from "./lib/shareBoard.js";
 import Sidebar from "./components/Sidebar.jsx";
 import Composer from "./components/Composer.jsx";
 import Drawer, { InboxItem } from "./components/Drawer.jsx";
@@ -40,8 +42,38 @@ export default function App() {
   const composer = useRef(null);
   const summaryRef = useRef(null);
   const toastT = useRef();
+  useEffect(() => {
+    let active = true;
+    const checkSharedBoard = () => {
+      readShareURL(location.hash).then(incoming => {
+        if (active && incoming) setModal({ type: 'share', incoming });
+      }).catch(error => { if (active) setModal({ type: 'share', importError: error.message }); });
+    };
+    checkSharedBoard();
+    window.addEventListener('hashchange', checkSharedBoard);
+    return () => { active = false; window.removeEventListener('hashchange', checkSharedBoard); };
+  }, []);
+  function importSharedBoard(incoming) {
+    const copy = { ...incoming, id: uid('shared-'), title: incoming.title + ' (shared copy)' };
+    setS(s => ({ ...s, boards: [copy, ...s.boards], activeId: copy.id }));
+    setSelected(null); setView('board'); setTab('summary'); setSidebarOpen(true); setModal(null);
+    if (location.hash.startsWith('#board=')) history.replaceState(null, '', location.pathname + location.search);
+    showToast('Shared board opened as your own copy');
+  }
 
   const board = S.boards.find((b) => b.id === S.activeId) || S.boards[0];
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const dismissSidebar = (event) => {
+      if (!(event.target instanceof Element)) return;
+      // Cards open their own inspection; the toggle and modal keep their existing behavior.
+      if (event.target.closest('.sidebar, .card, .modal, [aria-label="Toggle Story File panel"]')) return;
+      setSidebarOpen(false);
+      setSelected(null);
+    };
+    document.addEventListener('pointerdown', dismissSidebar, true);
+    return () => document.removeEventListener('pointerdown', dismissSidebar, true);
+  }, [sidebarOpen]);
   const selectedNode = selected ? board.nodes.find((n) => n.id === selected) : null;
   const getBoard = (id) => Sref.current.boards.find((b) => b.id === id);
   const updateBoard = useCallback((id, fn) => setS((s) => ({ ...s, boards: s.boards.map((b) => (b.id === id ? fn(b) : b)) })), []);
@@ -263,6 +295,9 @@ export default function App() {
             onChange={(e) => updateBoard(board.id, (b) => ({ ...b, title: e.target.value }))} />
         </div>
         <div className="topbar-right">
+          <button className="icon-btn" aria-label="Share board" title="Share board" onClick={() => setModal({ type: 'share' })}>
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="m9 10 6-4M9 14l6 4" /></svg>
+          </button>
           <span className="demo-chip" title="Riverton and everyone in it are fictional. Agents are simulated.">Illustrative concept · fictional data</span>
           {view === "analytics" ? (
             <button className="pill-btn" onClick={() => setView("board")} title="Back to the board">
@@ -332,6 +367,7 @@ export default function App() {
         onSwitch={switchBoard} onNew={newBoard} onPickInbox={pickInbox}
         onAnalytics={() => { setDrawerOpen(false); setView("analytics"); }} onReset={resetDemo} />
 
+      {modal?.type === 'share' && <ShareBoardModal board={board} incoming={modal.incoming} importError={modal.importError} onClose={() => setModal(null)} onImport={importSharedBoard} />}
       {modal && modal.type === "folder" && modalNode && (
         <FolderModal n={modalNode} onClose={() => setModal(null)} onDig={() => { setModal(null); select(modalNode.id); runDig(S.activeId, modalNode.id, "Who funded this?"); }} />
       )}

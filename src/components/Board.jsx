@@ -8,9 +8,10 @@ function Legend({ hidden, onToggle }) {
   return (
     <div className={"legend" + (collapsed ? " collapsed" : "")}>
       <div className="legend-title">
-        <span>String key</span>
+        <span>Map key</span>
         <button onClick={() => setCollapsed((c) => !c)}>{collapsed ? "show" : "hide"}</button>
       </div>
+      <div className="legend-row">Click a source to inspect detective findings</div>
       {Object.entries(KINDS).map(([k, v]) => (
         <button key={k} className={"legend-row" + (hidden.includes(k) ? " off" : "")} onClick={() => onToggle(k)} title="Show/hide these strings">
           <svg width="26" height="8"><path d="M1 4 Q13 9 25 4" stroke={v.color} strokeWidth="2.4" fill="none" strokeDasharray={k === "origin" ? "4 3" : undefined} /></svg>
@@ -47,11 +48,7 @@ const Board = forwardRef(function Board(
   const [dragPos, setDragPos] = useState(null);
   const drag = useRef(null);
   const [tip, setTip] = useState(null);
-
-  const nodes = useMemo(
-    () => board.nodes.map((n) => (dragPos && dragPos.id === n.id ? { ...n, x: dragPos.x, y: dragPos.y } : n)),
-    [board.nodes, dragPos]
-  );
+  const nodes = useMemo(() => board.nodes.map(n => dragPos?.id === n.id ? { ...n, x: dragPos.x, y: dragPos.y } : n), [board.nodes, dragPos]);
   const byId = useMemo(() => Object.fromEntries(nodes.map((n) => [n.id, n])), [nodes]);
 
   // ----- camera -----
@@ -132,7 +129,7 @@ const Board = forwardRef(function Board(
 
   // ----- pointer: pan, drag cards, click cards/strings -----
   const onPointerDown = (e) => {
-    if (e.button !== 0 || e.target.closest("[data-open]")) return;
+    if (e.button !== 0 || e.target.closest("[data-open], button, summary, details")) return;
     const card = e.target.closest(".card");
     if (card) {
       const n = byId[card.dataset.id];
@@ -166,7 +163,10 @@ const Board = forwardRef(function Board(
       if (d.moved && dragPos) onMoveEnd(d.id, dragPos.x, dragPos.y);
       else if (!d.moved) onSelect(d.id === selected ? null : d.id);
       setDragPos(null);
-    } else if (!d.moved && d.hit != null) { setTip(null); onOpenEvidence(d.hit); }
+    } else if (!d.moved && d.hit != null) {
+      setTip(null);
+      onOpenEvidence(d.hit);
+    }
     else if (!d.moved && selected) onSelect(null);
   };
   const onDoubleClick = (e) => {
@@ -210,6 +210,7 @@ const Board = forwardRef(function Board(
           <div className={"nodes" + (hasFocus ? " has-focus" : "")} ref={nodesRef}>
             {nodes.map((n) => (
               <Card key={n.id} n={n} lit={nb ? nb.has(n.id) : false} selected={n.id === selected}
+                onGo={id => { onSelect(id); }}
                 dragging={dragPos && dragPos.id === n.id} drop={drops[n.id]} onOpenFolder={onOpenFolder} />
             ))}
           </div>

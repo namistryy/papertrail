@@ -687,3 +687,23 @@ table.dt td:last-child, table.dt th:last-child { text-align: right; font-variant
   .hbar { grid-template-columns: 90px 1fr 36px; }
   .ticker { max-width: calc(100% - 70px); min-width: 0; left: 12px; transform: none; }
 }
+
+/* Findings stay on the map, alongside the source they explain. */
+.card { transition: transform .2s ease, box-shadow .2s, opacity .25s, filter .25s; transform-origin: 50% 2px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .card:hover:not(.dragging):not(.drop) { transform: rotate(0deg) scale(1.035); z-index: 45; box-shadow: 0 5px 10px #0003, 0 20px 32px #28140055; }
+}
+.card:focus-within { z-index: 46; }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+.agent-details { margin-top: 10px; border-top: 1px solid var(--line); padding-top: 9px; font-size: 12px; line-height: 1.6; }
+.agent-details summary { cursor: pointer; color: var(--ink); font-weight: 600; }
+.agent-details h4 { margin: 12px 0 4px; font-size: 12px; }
+.agent-details ul { padding-left: 18px; }
+.agent-details .link-btn { text-align: left; }
+.agent-detail-meta { font-size: 11px; color: var(--ink-3); margin-top: 8px; }
+
+.share-board p { font-size: 13px; line-height: 1.6; }
+.share-link-label { display: block; margin: 16px 0 6px; font-size: 12px; font-weight: 600; }
+.share-link { width: 100%; border: 1px solid var(--line); border-radius: 7px; padding: 10px; background: var(--chrome); color: var(--ink); font-size: 12px; }
+.share-local-note { padding: 10px 12px; background: var(--chrome-3); border-radius: 7px; }
+.share-board button:disabled { opacity: .5; cursor: wait; }

@@ -2,6 +2,7 @@ import React from "react";
 import { AGENTS, KINDS, VERDICT, LEAN_LABELS } from "../lib/constants.js";
 import { shortTitle } from "../lib/util.js";
 import { TrailPin } from "./Logo.jsx";
+import { agentDetails } from "../lib/agentDetails.js";
 
 /** Renders text with [[nodeId]] citations as numbered buttons that jump to the pin. */
 export function RefText({ text, board, onRef }) {
@@ -115,6 +116,7 @@ function Inspect({ board, n, actions }) {
   const typeName = { post: n.platform + " post", shot: "Your screenshot", doc: "Document", note: "Sticky note", folder: "Folder", clip: "News clipping" }[n.type];
   const conns = board.strings.filter((s) => s.from === n.id || s.to === n.id);
   const c = n.checks;
+  const detail = agentDetails(board, n);
   return (
     <>
       <div className="insp-type">{typeName}{n.handle ? " · " + n.handle : ""}{n.date ? " · " + n.date : ""}</div>
@@ -146,23 +148,51 @@ function Inspect({ board, n, actions }) {
             <AgentCard name="Evidence Checker">
               <span className={"verdict " + c.validity.verdict}>{VERDICT[c.validity.verdict].icon} {VERDICT[c.validity.verdict].label}</span>
               <p>{c.validity.note}</p>
+              <div className="agent-detail-meta">Evidence strength: {detail.strength}</div>
+              <details className="agent-details" key={n.id + '-evidence'}>
+                <summary>More detail: why this assessment?</summary>
+                <h4>Accuracy assessment</h4><p>{c.validity.note}</p>
+                <h4>Evidence strength</h4><p>{detail.strengthWhy}</p>
+                <h4>Source reliability</h4><p>{detail.reliability}</p>
+                <h4>Evidence trail</h4>
+                {detail.routes.length ? detail.routes.map(route => <div key={route.node.id}>
+                  <button className="link-btn" onClick={() => actions.goto(route.node.id)}>{shortTitle(route.node, 60)} ↗</button>
+                  {route.edges.map((edge, i) => <div key={i}><button className="link-btn" onClick={() => actions.openEvidence(board.strings.indexOf(edge))}>{edge.label || KINDS[edge.kind].label} · inspect connection</button>{edge.ev && <p>{edge.ev}</p>}</div>)}
+                </div>) : <p>No direct evidence trail linked yet.</p>}
+                <h4>Missing context & limits</h4><p>{detail.limitations}</p>
+                <p className="agent-detail-meta">Predefined assessment · fictional demo data · no live verification</p>
+              </details>
             </AgentCard>
           )}
           {c.bias && (
             <AgentCard name="Bias Hound">
               <b>{c.bias.label}</b>
+              <div className="agent-detail-meta">Wording / framing: {LEAN_LABELS[Math.max(0, Math.min(4, Math.round(c.bias.lean) + 2))]} relative to this story</div>
               <div className="lean" role="img" aria-label={`Slant ${c.bias.lean} on a scale of -2 to 2`}>
                 <span className="lean-mark" style={{ left: ((c.bias.lean + 2) / 4) * 100 + "%" }} />
               </div>
               <div className="lean-scale"><span>{LEAN_LABELS[0]}</span><span>Neutral</span><span>{LEAN_LABELS[4]}</span></div>
               <p>{c.bias.note}</p>
+              <details className="agent-details" key={n.id + '-bias'}>
+                <summary>More detail: wording & perspective</summary>
+                <h4>Why this framing label?</h4><p>{c.bias.note}</p>
+                <h4>Wording in this source</h4>
+                {detail.wording.length ? <ul>{detail.wording.map((word,i) => <li key={i}><q>{word}</q></li>)}</ul> : <p>No specific loaded phrase is identified in the title. See the recorded framing explanation above.</p>}
+                <h4>How to interpret the scale</h4><p>For and against describe framing toward the topic, not a left/right political rating. Strongly for or strongly against indicates more pronounced advocacy in this demo. A neutral label is not proof of accuracy.</p>
+                <h4>Context to compare</h4><p>{detail.limitations}</p>
+                <p>Emotional wording can suggest urgency, fear, or certainty. It does not itself prove a claim false or establish the author's intent.</p>
+                <p className="agent-detail-meta">Predefined framing assessment · no live verification</p>
+              </details>
             </AgentCard>
           )}
           {c.origin && (
             <AgentCard name="Tracer">
               <b>Where it came from</b>
+              <details className="agent-details" key={n.id + '-origin'}><summary>More detail: source chain & provenance</summary>
               <ul className="chain">{c.origin.chain.map((x, i) => <li key={i}>{x}</li>)}</ul>
               <p style={{ marginTop: 0 }}>{c.origin.note}</p>
+              <p>Earliest traceable source is not necessarily the first publication. Only the documented strings on this board establish relationships in the demo.</p>
+              <p className="agent-detail-meta">Simulated provenance · fictional demo sources</p></details>
             </AgentCard>
           )}
         </>
