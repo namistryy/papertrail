@@ -196,7 +196,14 @@ function AgentsTab({ board }) {
   const avg = hops.length ? (hops.reduce((a, c) => a + c, 0) / hops.length).toFixed(1) : "–";
   return (
     <>
-      <p className="muted" style={{ marginTop: 0 }}>Three detective agents work every board. Each one stamps its findings on the pins and writes sticky notes when something's off.</p>
+      <div className="drawer-label" style={{ margin: "0 0 8px" }}>Activity log</div>
+      {(board.log || []).length
+        ? board.log.slice().reverse().map((l, i) => <div key={i} className="ticker-row done" style={{ animation: "none" }}><span className="ic">✓</span>{l}</div>)
+        : <p className="muted">Nothing yet.</p>}
+
+      <details className="agents-panel">
+        <summary>About the agents</summary>
+        <p className="muted" style={{ marginTop: 10 }}>Three detective agents work every board. Each one stamps its findings on the pins and writes sticky notes when something's off.</p>
       <AgentCard name="Evidence Checker">
         <p>Builds an evidence profile for every claim (claim, source, evidence, missing context, status) from primary sources. It isn't a true/false meter: predictions and value judgments get labelled as such.</p>
         <div className="stat">This board: ✓ {cnt("verified")} verified · ≈ {cnt("partial")} partial · ✗ {cnt("contradicted")} contradicted · ? {cnt("unverified")} unverified</div>
@@ -209,10 +216,7 @@ function AgentsTab({ board }) {
         <p>Follows reposts and stitches back to the original source, and follows money through public finance records.</p>
         <div className="stat">This board: avg {avg} hops from original</div>
       </AgentCard>
-      <div className="drawer-label" style={{ margin: "18px 0 8px" }}>Activity log</div>
-      {(board.log || []).length
-        ? board.log.slice().reverse().map((l, i) => <div key={i} className="ticker-row done" style={{ animation: "none" }}><span className="ic">✓</span>{l}</div>)
-        : <p className="muted">Nothing yet.</p>}
+      </details>
     </>
   );
 }
